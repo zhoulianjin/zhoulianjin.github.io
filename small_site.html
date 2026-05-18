@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品购买 - 简易线上收款</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .product-section {
+            flex: 3;
+            min-width: 300px;
+        }
+
+        .instructions-section {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            color: #4e54c8;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .product {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .product-image {
+            flex: 1;
+            min-width: 250px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .product-details {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .product-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: #777;
+        }
+
+        .control-group {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            max-width: 200px;
+        }
+
+        .quantity-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .quantity-btn:first-child {
+            border-radius: 6px 0 0 6px;
+        }
+
+        .quantity-btn:last-child {
+            border-radius: 0 6px 6px 0;
+        }
+
+        #quantity {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-left: none;
+            border-right: none;
+            font-size: 1.1rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            margin-top: 5px;
+        }
+
+        .buy-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(78, 84, 200, 0.3);
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(78, 84, 200, 0.4);
+        }
+
+        .buy-btn:active {
+            transform: translateY(0);
+        }
+
+        .instructions-list {
+            list-style-type: none;
+        }
+
+        .instructions-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .instructions-list li:last-child {
+            border-bottom: none;
+        }
+
+        .instructions-list i {
+            color: #4e54c8;
+            margin-right: 12px;
+            margin-top: 3px;
+        }
+
+        .wechat-info {
+            background: #f0f8ff;
+            border-left: 4px solid #4e54c8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .wechat-info strong {
+            color: #4e54c8;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+            max-height:90vh;
+            overflow-y:auto;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-title {
+            color: #4e54c8;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .qr-code img {
+            max-width: 250px;
+            width: 100%;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+
+        .total-amount {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .order-summary {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .order-summary p {
+            margin: 8px 0;
+        }
+
+        .modal-instructions {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .product {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>各种网站、APP账号</h1>
+            <p class="subtitle"></p>
+        </header>
+
+        <div class="main-content">
+            <section class="product-section">
+                <div class="card">
+                    <h2></h2>
+                    <div class="product">
+                        <div class="product-image">
+                            <!-- 商品图片，这里使用一个示例图片 -->
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="优质商品">
+                        </div>
+                        <div class="product-details">
+                            <h3 class="product-title"></h3>
+                            <p>一个账户10元，账号全部都是大陆手机号码，如需海外号码账户，请在右侧“购买说明”中找到微信号添加微信沟通</p>
+
+                            <div class="price">¥10.00 <span>每件</span></div>
+
+                            <div class="control-group">
+                                <label for="quantity">购买数量：</label>
+                                <div class="quantity-control">
+                                    <button class="quantity-btn" id="decrease">-</button>
+                                    <input type="number" id="quantity" min="1" max="100" value="1">
+                                    <button class="quantity-btn" id="increase">+</button>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label for="notes">订单备注（可选）：</label>
+                                <textarea id="notes" placeholder="请在此填写您的特殊要求"></textarea>
+                            </div>
+
+                            <button class="buy-btn" id="buyButton">
+                                <i class="fas fa-shopping-cart"></i> 立即购买
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="instructions-section">
+                <div class="card">
+                    <h2>购买说明</h2>
+                    <div class="wechat-info">
+                        <p><strong>重要提示：</strong>购买前请先添加商家微信</p>
+                        <p>微信号：<strong>DAKINGLU</strong>（请备注"购买商品"）</p>
+                    </div>
+
+                    <ul class="instructions-list">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>1. 添加微信</strong>
+                                <p>搜索上方微信号添加商家微信，备注"购买商品"</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>2. 确认需求</strong>
+                                <p>与商家沟通您的具体需求，确认商品需求、数量等信息</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>3. 提交订单</strong>
+                                <p>在本页面选择购买数量，填写备注，然后点击"立即购买"</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>4. 完成支付</strong>
+                                <p>扫码支付后，请将付款截图发送给商家</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>5. 接收商品</strong>
+                                <p>商家确认收款后，会将账户和密码通过微信发送给您</p>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="wechat-info" style="margin-top: 20px;">
+                        <p><strong>注意事项：</strong></p>
+                        <p>• 一件商品价格为10元，多件请修改数量</p>
+                        <p>• 数量需求较大时当天不一定全量满足</p>
+                        <p>• 收到商品信息后请及时登录验证</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 收款码模态框 -->
+        <div class="modal-overlay" id="paymentModal">
+            <div class="modal-content">
+                <button class="close-modal" id="closeModal">&times;</button>
+                <h3 class="modal-title">请扫码完成支付</h3>
+
+                <div class="order-summary">
+                    <p><strong>商品：</strong>网站/APP账户</p>
+                    <p><strong>数量：</strong><span id="modalQuantity">1</span> 件</p>
+                    <p><strong>备注：</strong><span id="modalNotes">无</span></p>
+                </div>
+
+                <div class="total-amount">
+                    总金额：¥<span id="modalTotal">10.00</span>
+                </div>
+
+                <div class="qr-code">
+                    <!-- 请将此处替换为您自己的微信收款码图片 -->
+                    <img src="wechat-pay.png" alt="微信收款码" id="qrCodeImage">
+                    <p>使用微信扫描二维码支付</p>
+                </div>
+
+                <div class="modal-instructions">
+                    <p><strong>重要：</strong>支付完成后，请将付款截图通过微信发送给商家，商家会通过微信将账户和密码发送给您。</p>
+                    <p>如果在支付过程中遇到问题，请联系微信：<strong>DAKINGLU</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 本页面仅用于展示商品说明和购买，交易过程需通过微信沟通确认</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM元素
+        const quantityInput = document.getElementById('quantity');
+        const decreaseBtn = document.getElementById('decrease');
+        const increaseBtn = document.getElementById('increase');
+        const notesInput = document.getElementById('notes');
+        const buyButton = document.getElementById('buyButton');
+        const paymentModal = document.getElementById('paymentModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalQuantity = document.getElementById('modalQuantity');
+        const modalTotal = document.getElementById('modalTotal');
+        const modalNotes = document.getElementById('modalNotes');
+        const qrCodeImage = document.getElementById('qrCodeImage');
+
+        // 商品单价
+        const unitPrice = 10.00;
+
+        // 数量控制
+        decreaseBtn.addEventListener('click', () => {
+            let currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+                updateTotal();
+            }
+        });
+
+        increaseBtn.addEventListener('click', () => {
+            let currentValue = parseInt(quantityInput.value);
+            if (currentValue < 100) {
+                quantityInput.value = currentValue + 1;
+                updateTotal();
+            }
+        });
+
+        quantityInput.addEventListener('change', () => {
+            let value = parseInt(quantityInput.value);
+            if (isNaN(value) || value < 1) {
+                quantityInput.value = 1;
+            } else if (value > 100) {
+                quantityInput.value = 100;
+            }
+            updateTotal();
+        });
+
+        // 计算总金额
+        function updateTotal() {
+            const quantity = parseInt(quantityInput.value);
+            const total = (quantity * unitPrice).toFixed(2);
+
+            // 更新模态框中的信息
+            modalQuantity.textContent = quantity;
+            modalTotal.textContent = total;
+        }
+
+        // 购买按钮点击事件
+        buyButton.addEventListener('click', () => {
+            const quantity = parseInt(quantityInput.value);
+            const notes = notesInput.value.trim();
+            const total = (quantity * unitPrice).toFixed(2);
+
+            // 更新模态框信息
+            modalQuantity.textContent = quantity;
+            modalTotal.textContent = total;
+            modalNotes.textContent = notes || '无';
+
+            // 生成包含订单信息的二维码（这里使用一个示例URL）
+            // 在实际使用中，您可以使用自己的静态收款码，或者生成包含订单信息的动态二维码
+            const orderInfo = `商品:网站/APP账户,数量:${quantity},总价:${total}元`;
+            qrCodeImage.src = `wechat-pay.png`;
+
+            // 显示模态框
+            paymentModal.style.display = 'flex';
+        });
+
+        // 关闭模态框
+        closeModal.addEventListener('click', () => {
+            paymentModal.style.display = 'none';
+        });
+
+        // 点击模态框外部关闭
+        paymentModal.addEventListener('click', (e) => {
+            if (e.target === paymentModal) {
+                paymentModal.style.display = 'none';
+            }
+        });
+
+        // 初始化
+        updateTotal();
+
+        // 添加键盘事件监听
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && paymentModal.style.display === 'flex') {
+                paymentModal.style.display = 'none';
+            }
+        });
+
+        // 模拟加载效果
+        window.addEventListener('load', () => {
+            document.body.style.opacity = 0;
+            document.body.style.transition = 'opacity 0.3s';
+
+            setTimeout(() => {
+                document.body.style.opacity = 1;
+            }, 100);
+        });
+    </script>
+</body>
+</html>
